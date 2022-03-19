@@ -5,7 +5,6 @@ import http.client as http_lib
 import json
 import sys
 import os
-from pathlib import Path
 import click
 
 if sys.version_info[0] >= 3:
@@ -15,6 +14,7 @@ import hellolan
 
 
 def search():
+    print("Searching your Hue Bridge. Please wait...")
     return list(
         filter(lambda device: device['ip'] != '192.168.1.1' and device['tcp'][80]['cpe'] == 'cpe:/a:igor_sysoev:nginx',
                hellolan.scan(port='80', services=True)))
@@ -162,6 +162,9 @@ class Bridge(object):
         self.request('PUT', '/api/' + self.username + '/config', json.dumps(data))
 
     def request(self, mode='GET', address=None, data=None, write=False):
+        if not self.ip:
+            print("Hue Bridge`s IP is not set.")
+
         try:
             connection = http_lib.HTTPConnection(self.ip, timeout=3)
             if mode == 'GET' or mode == 'DELETE':

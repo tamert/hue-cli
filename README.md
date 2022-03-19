@@ -1,3 +1,5 @@
+# Hue Cli
+![hue-cli](screenshot.png)
 
 #requirements
 ###python 3
