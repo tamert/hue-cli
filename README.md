@@ -21,7 +21,8 @@ pip install -r request
 #run
 ```bash
 python main.py open 
-python main.py open --n 1 
+python main.py alarm 
+python main.py open --no 1 
 python main.py close
 ```
 

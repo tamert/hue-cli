@@ -35,6 +35,13 @@ def close(no):
     print(bridge.set_light(int(no), 'on', False))
 
 
+@cli.command()
+@click.option('--no', '-n', prompt='Which Light?',
+              help='Opened of the light to be alarm')
+def alarm(no):
+    print(bridge.alarm(int(no)))
+
+
 if __name__ == '__main__':
     click.echo(Fore.LIGHTGREEN_EX + """
      __    __   __    __   _______ 
