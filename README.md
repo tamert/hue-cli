@@ -1,5 +1,5 @@
 # Hue Cli
-![hue-cli](screenshot.png)
+![hue-cli](screen-shot.png)
 
 #requirements
 ###python 3
