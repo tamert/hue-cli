@@ -262,7 +262,7 @@ class Bridge(object):
         print('Attempting to connect to the bridge...')
         # If the ip and username were provided at class init
         if self.ip is not None and self.username is not None:
-            print('Uding ip: ' + self.ip)
+            print('Using ip: ' + self.ip)
             # print('Using username: ' + self.username)
             return True
 
@@ -331,24 +331,38 @@ class Bridge(object):
             return state['state'][parameter]
 
     def set_color(self, light_id, r=255, g=255, b=255):
-        self.set_light(light_id, 'xy', rgb_to_xy(r, g, b))
+        return self.set_light(light_id, 'xy', rgb_to_xy(r, g, b))
 
     def alarm(self, light_id):
         light = self.get_light(light_id)
-        for i in range(1, 7):
-            time.sleep(1)
-            if i % 2 == 0:
-                self.set_light(light_id, 'xy', rgb_to_xy(1, 0.1, 0.1))
-            else:
-                self.set_light(light_id, 'xy', rgb_to_xy(0.1, 0.1, 1))
-                if i == 1 and not light['state']['on']:
-                    self.set_light(light_id, 'on', True)
+        if light:
+            for i in range(1, 7):
+                if i % 2 == 0:
+                    self.set_light(light_id, 'xy', rgb_to_xy(1, 0.1, 0.1))
+                    self.set_light(light_id, 'bri', 0)
+                    time.sleep(1)
+                    self.set_light(light_id, 'bri', 254)
+                    self.set_light(light_id, 'bri', 0)
+                    time.sleep(1)
+                    self.set_light(light_id, 'bri', 254)
+                else:
+                    self.set_light(light_id, 'xy', rgb_to_xy(1, 0.4, 0.1))
+                    self.set_light(light_id, 'bri', 0)
+                    time.sleep(1)
+                    self.set_light(light_id, 'bri', 254)
+                    self.set_light(light_id, 'bri', 0)
+                    time.sleep(1)
+                    self.set_light(light_id, 'bri', 254)
+                    if i == 1 and not light['state']['on']:
+                        self.set_light(light_id, 'on', True)
 
-        if not light['state']['on']:
-            self.set_light(light_id, 'on', False)
+            if not light['state']['on']:
+                self.set_light(light_id, 'on', False)
 
-        self.set_light(light_id, 'xy', light['state']['xy'])
-
+            self.set_light(light_id, 'xy', light['state']['xy'])
+            self.set_light(light_id, 'bri', light['state']['bri'])
+            return True
+        return False
 
     # light_id can be a single lamp or an array or lamps
     # parameters: 'on' : True|False , 'bri' : 0-254, 'sat' : 0-254, 'ct': 154-500
@@ -373,6 +387,7 @@ class Bridge(object):
                 result.append(
                     self.request('PUT', '/api/' + self.username + '/lights/' + str(converted_light) + '/state',
                                  json.dumps(data)))
+
         return result
 
     def get_group(self, group_id=None, parameter=None):
